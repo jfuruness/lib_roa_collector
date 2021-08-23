@@ -55,6 +55,8 @@ class ROACollector(Base):
         rows = []
         # Done this way because many links are broken, so paths are empty
         for fname in os.listdir(self._dir):
+            if ".csv" not in fname:
+                continue
             tal = fname.replace(".csv", "")
             path = os.path.join(self._dir, fname)
             with open(path, "r") as f:
@@ -72,4 +74,6 @@ class ROACollector(Base):
                     rows.append(new_row)
         # Write to file
         with open(self.tsv_path, "w") as f:
-            csv.DictWriter(f, new_row.keys(), delimiter="\t").writerows(rows)
+            writer = csv.DictWriter(f, new_row.keys(), delimiter="\t")
+            writer.writeheader()
+            writer.writerows(rows)
