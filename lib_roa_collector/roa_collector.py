@@ -61,8 +61,8 @@ class ROACollector(Base):
             path = os.path.join(self._dir, fname)
             with open(path, "r") as f:
                 for row in csv.DictReader(f):
-                    # Get rid of quotes
-                    new_row = {"uri": row["URI"][1:-1],
+                    # Don't start and end 1 early for URI - this cuts off data
+                    new_row = {"uri": row["URI"],
                                # Get rid of AS in front of ASN
                                "asn": row["ASN"][2:],
                                # Replaace bad key names
