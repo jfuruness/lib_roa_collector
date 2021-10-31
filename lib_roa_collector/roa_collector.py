@@ -5,7 +5,7 @@ import os
 import re
 
 from lib_utils.base_classes import Base
-from lib_utils.file_funcs import makedirs, download_file
+from lib_utils.file_funcs import download_file
 from lib_utils.helper_funcs import get_hrefs, run_cmds
 
 from .tables import ROAsTable
@@ -46,7 +46,7 @@ class ROACollector(Base):
             # Get name of tal
             tal = re.findall("rpki/(.+).tal/", url)[0]
             # Get download path
-            paths.append(os.path.join(self._dir, f"{tal}.csv"))
+            paths.append(self.dir_ / f"{tal}.csv")
         return paths
 
     def _extract_data(self):
@@ -54,12 +54,12 @@ class ROACollector(Base):
 
         rows = []
         # Done this way because many links are broken, so paths are empty
-        for fname in os.listdir(self._dir):
+        for fname in os.listdir(self.dir_):
             if ".csv" not in fname:
                 continue
             tal = fname.replace(".csv", "")
-            path = os.path.join(self._dir, fname)
-            with open(path, "r") as f:
+            path = self.dir_ / fname
+            with path.open(mode="r") as f:
                 for row in csv.DictReader(f):
                     # Don't start and end 1 early for URI - this cuts off data
                     new_row = {"uri": row["URI"],
@@ -73,7 +73,7 @@ class ROACollector(Base):
                                "tal": tal}
                     rows.append(new_row)
         # Write to file
-        with open(self.tsv_path, "w") as f:
+        with self.tsv_path.open(mode="w") as f:
             writer = csv.DictWriter(f, new_row.keys(), delimiter="\t")
             writer.writeheader()
             writer.writerows(rows)
