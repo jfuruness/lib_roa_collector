@@ -25,10 +25,6 @@ class ROACollector(Base):
         self.download_mp(download_file, [urls, paths])
         # Extract data to the tsv_path
         self._extract_data()
-        # Insert info into the db
-        if self.db:
-            with ROAsTable(clear=True) as db:
-                db.bulk_insert_tsv(self.tsv_path)
 
     def _get_urls(self):
         """Gets URLs to all the ROA CSVs"""
@@ -37,7 +33,7 @@ class ROACollector(Base):
         urls = [self.url + x for x in get_hrefs(self.url) if ".tal" in x]
         # https://ftp.ripe.net/rpki/afrinic.tal/2021/08/16/roas.csv
         return [self.dl_time.strftime(f"{x}/%Y/%m/%d/roas.csv") for x in urls]
- 
+
     def _get_paths(self, urls):
         """Gets all paths from the URLs for downloading"""
 
