@@ -8,7 +8,6 @@ from lib_utils.base_classes import Base
 from lib_utils.file_funcs import download_file
 from lib_utils.helper_funcs import get_hrefs, run_cmds
 
-from .tables import ROAsTable
 
 class ROACollector(Base):
     """Downloads ROAs from ripe"""
